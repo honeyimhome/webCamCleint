@@ -33,12 +33,17 @@ def performGreeting(user):
 
     profile = user['profile']
     say(profile['greeting'])
-    say('I am adjusting the tempeture to your preferred' + str(profile['temperature']) + 'degrees fahrenheit')
+    say('The weather is looking chilly outside! Better stay warm!')
+    say('I am adjusting the temperature to your preferred' + str(profile['temperature']) + 'degrees fahrenheit')
     time.sleep(3)
 
     if 'Nicolas' == profile['name']:
         say('I will now play ' + str(profile['song']))
         playMp3('/home/nicolas/Downloads/FrankSinatraNewYorkNewYork.mp3')
+
+    if 'Bradley' == profile['name']:
+        say('I will now play' + str(profile['song']))
+        playMp3('/home/nicolas/Downloads/AllAlongTheWatchtowerAudio.mp3')
 
 
 
@@ -73,7 +78,7 @@ def say(text):
    os.remove(path)
 
 def playMp3(path):
-    os.system("mpg123 "+path)
+    os.system("mpg123 "+ path)
 
 
 
