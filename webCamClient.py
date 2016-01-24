@@ -41,7 +41,7 @@ def performGreeting(user):
         say('I will now play ' + str(profile['song']))
         playMp3('/home/max/Desktop/webCamCleint/FrankSinatraNewYorkNewYork.mp3.mp3')
 
-    if 'Bradley' == profile['name']:
+    if str(profile['song']) == "all along the watchtower":
         say('I will now play' + str(profile['song']))
         playMp3('/home/max/Desktop/webCamCleint/AllAlongTheWatchtowerAudio.mp3.mp3')
 
