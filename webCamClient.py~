@@ -34,11 +34,17 @@ def detectPerson():
     imagePath = 'temp-image.jpg'
     saveFace(imagePath)
     imageB64 = encodeImage(imagePath)
+    os.remove(imagePath)
     
     payload = {'image': imageB64, 'albumName': albumName, 'albumKey': albumKey, 'houseID': houseID}
     r = requests.post(url, data=payload)
-    print r.text
-    potentialUser = json.loads(r.text)
+    print 'THIS IS YOUR RESPONSE: ' + r.text
+
+    try:
+        potentialUser = json.loads(r.text)
+    except:
+        continue
+    
     
     if potentialUser['isGuest'] == True:
         say('Intruder Alert')
@@ -51,7 +57,7 @@ def detectPerson():
 
 def say(text):
    path = 'say-temp.mp3'
-   tts = gTTS(text= textToSpeak, lang= 'en')
+   tts = gTTS(text=text, lang= 'en')
    tts.save(path)
    os.system("mpg123 "+path)
    os.remove(path)
