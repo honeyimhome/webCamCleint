@@ -62,15 +62,9 @@ def postToServer(urlVal, albumName, albumKey):
     return r.text
 
 def speak(text):
-    text = 'This is Jarvis, Welcome home ' + text
-    engine = pyttsx.init()
+s    engine = pyttsx.init()
     voices = engine.getProperty('voices')
-    # engine.setProperty('')
     engine.setProperty('voice', voices[2].id)
-    # for voice in voices:
-    #     if voice.gender == "female":
-    #         engine.setProperty('voice', voice.id)
-    #         print voice.id
     rate = engine.getProperty('rate')
     engine.setProperty('rate', rate-50)
     engine.say(text)
