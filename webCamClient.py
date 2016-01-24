@@ -20,6 +20,7 @@ houseID = '56a4dab23b5497c00f202da8';
 albumName = 'vhuvp5LKlqmsh8SRrw5l6H08eJnDp1MJDr2jsnCe40HSfVS6P9CashHouse'
 albumKey = '455f6c8615c31df211293810133e2ee150421f5fbaedf1ac2221a25c643e540c'
 
+shortMode = False
 
 def main():
 
@@ -33,15 +34,16 @@ def performGreeting(user):
 
     profile = user['profile']
     say(profile['greeting'])
-    say('The weather is looking chilly outside! Better stay warm!')
-    say('I am adjusting the temperature to your preferred' + str(profile['temperature']) + 'degrees fahrenheit')
+    if not shortMode:
+        say('The weather is looking chilly outside! Better stay warm!')
+        say('I am adjusting the temperature to your preferred' + str(profile['temperature']) + 'degrees fahrenheit')
     time.sleep(3)
 
     if 'Nicolas' == profile['name']:
         say('I will now play ' + str(profile['song']))
         playMp3('/home/max/Desktop/webCamCleint/FrankSinatraNewYorkNewYork.mp3.mp3')
-
-    if str(profile['song']) == "all along the watchtower":
+	
+    if 'song' in profile and profile['song'] == "all along the watchtower" and not shortMode:
         say('I will now play' + str(profile['song']))
         playMp3('/home/max/Desktop/webCamCleint/AllAlongTheWatchtowerAudio.mp3.mp3')
 
@@ -62,7 +64,7 @@ def detectPerson():
         return
 
     if potentialUser['isGuest'] == True:
-        say('Intruder Alert')
+        say('Unknown guest detected. Sending Picture Message to household.')
         return
     performGreeting(potentialUser['user'])
 
@@ -109,7 +111,7 @@ def saveFace(imagePath):
                 #flags = cv2.cv.CV_HAAR_SCALE_IMAGE
             )
             print('counter is ' + str(counter))
-            if located is not ():
+            if located is not () and len(located) == 1:
                 print located
                 # print image
                 counter += 1
