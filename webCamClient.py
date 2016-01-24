@@ -10,7 +10,7 @@ import json
 #from pygame import mixer
 from gtts import gTTS
 
-classifierPath = '/opt/opencv/data/haarcascades/haarcascade_frontalface_alt.xml'
+classifierPath = '/home/nicolas/opencv-2.4.11/data/haarcascades/haarcascade_frontalface_alt.xml'
 
 baseURL = 'http://hih.maxfresonke.com'
 url = baseURL + '/api/recognizeImage'
@@ -24,7 +24,7 @@ def main():
     while True:
         detectPerson()
         time.sleep(10)
-  
+
 def performGreeting(user):
     print user
     profile = user['profile']
@@ -34,12 +34,12 @@ def detectPerson():
     imagePath = 'temp-image.jpg'
     saveFace(imagePath)
     imageB64 = encodeImage(imagePath)
-    
+
     payload = {'image': imageB64, 'albumName': albumName, 'albumKey': albumKey, 'houseID': houseID}
     r = requests.post(url, data=payload)
     print r.text
     potentialUser = json.loads(r.text)
-    
+
     if potentialUser['isGuest'] == True:
         say('Intruder Alert')
         return
@@ -55,13 +55,13 @@ def say(text):
    tts.save(path)
    os.system("mpg123 "+path)
    os.remove(path)
-   
+
 
 
 def saveFace(imagePath):
     if os.path.isfile(classifierPath) is not True:
         raise '\n\n***********!!!No training file present\n\n'
-        
+
 
     face_cascade =     cv2.CascadeClassifier(classifierPath)
     # print loadedCasca deClassifier
@@ -71,8 +71,11 @@ def saveFace(imagePath):
             _, image = camera.read()
             # cv2.imshow('Original', image)
 
-            greyimage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY);
-
+            try:
+                greyimage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY);
+            except:
+                continue
+                
             # cv2.imshow('greyImage', greyimage)
             located = face_cascade.detectMultiScale(
                 greyimage,
@@ -86,8 +89,8 @@ def saveFace(imagePath):
                 print located
                 # print image
                 cv2.imwrite(imagePath, image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])
-                return 
-    
+                return
+
 
 
 def encodeImage(path):
