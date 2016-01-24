@@ -51,7 +51,7 @@ def detectPerson():
 
 def say(text):
    path = 'say-temp.mp3'
-   tts = gTTS(text=text, lang= 'en')
+   tts = gTTS(text= textToSpeak, lang= 'en')
    tts.save(path)
    os.system("mpg123 "+path)
    os.remove(path)
