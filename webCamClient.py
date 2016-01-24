@@ -10,7 +10,7 @@ import json
 #from pygame import mixer
 from gtts import gTTS
 
-classifierPath = '/home/nicolas/opencv-2.4.11/data/haarcascades/haarcascade_frontalface_alt.xml'
+classifierPath = '/opt/opencv/data/haarcascades/haarcascade_frontalface_alt.xml'
 
 baseURL = 'http://hih.maxfresonke.com'
 # baseURL = '127.0.0.1:3000'
@@ -25,7 +25,7 @@ def main():
 
     while True:
         detectPerson()
-        time.sleep(10)
+
 
 def performGreeting(user):
     print user
@@ -39,11 +39,11 @@ def performGreeting(user):
 
     if 'Nicolas' == profile['name']:
         say('I will now play ' + str(profile['song']))
-        playMp3('/home/nicolas/Downloads/FrankSinatraNewYorkNewYork.mp3')
+        playMp3('/home/max/Desktop/webCamCleint/FrankSinatraNewYorkNewYork.mp3.mp3')
 
     if 'Bradley' == profile['name']:
         say('I will now play' + str(profile['song']))
-        playMp3('/home/nicolas/Downloads/AllAlongTheWatchtowerAudio.mp3')
+        playMp3('/home/max/Desktop/webCamCleint/AllAlongTheWatchtowerAudio.mp3.mp3')
 
 
 
@@ -85,7 +85,7 @@ def playMp3(path):
 def saveFace(imagePath):
     if os.path.isfile(classifierPath) is not True:
         raise '\n\n***********!!!No training file present\n\n'
-
+    counter = 0;
 
     face_cascade =     cv2.CascadeClassifier(classifierPath)
     # print loadedCasca deClassifier
@@ -108,12 +108,16 @@ def saveFace(imagePath):
                 minSize=(30, 30),
                 #flags = cv2.cv.CV_HAAR_SCALE_IMAGE
             )
-
+            print('counter is ' + str(counter))
             if located is not ():
                 print located
                 # print image
-                cv2.imwrite(imagePath, image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])
-                return
+                counter += 1
+                if counter >= 20:
+                     cv2.imwrite(imagePath, image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])
+                     return
+            else:
+                counter = 0
 
 
 
