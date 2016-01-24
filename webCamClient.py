@@ -20,7 +20,7 @@ houseID = '56a4dab23b5497c00f202da8';
 albumName = 'vhuvp5LKlqmsh8SRrw5l6H08eJnDp1MJDr2jsnCe40HSfVS6P9CashHouse'
 albumKey = '455f6c8615c31df211293810133e2ee150421f5fbaedf1ac2221a25c643e540c'
 
-shortMode = False
+shortMode = True
 
 def main():
 
@@ -29,10 +29,9 @@ def main():
 
 
 def performGreeting(user):
-    print user
-    print user['_id']
-
     profile = user['profile']
+
+    print '\nUser ' + profile['name'] + ' Detected!\n'
     say(profile['greeting'])
     if not shortMode:
         say('The weather is looking chilly outside! Better stay warm!')
@@ -56,7 +55,7 @@ def detectPerson():
 
     payload = {'image': imageB64, 'albumName': albumName, 'albumKey': albumKey, 'houseID': houseID}
     r = requests.post(url, data=payload)
-    print 'THIS IS YOUR RESPONSE: ' + r.text
+    #print 'Server Res: ' + r.text
 
     try:
         potentialUser = json.loads(r.text)
@@ -64,6 +63,7 @@ def detectPerson():
         return
 
     if potentialUser['isGuest'] == True:
+        print '\nUnknown  Guest Detected.\n'
         say('Unknown guest detected. Sending Picture Message to household.')
         return
     performGreeting(potentialUser['user'])
@@ -88,6 +88,7 @@ def saveFace(imagePath):
     if os.path.isfile(classifierPath) is not True:
         raise '\n\n***********!!!No training file present\n\n'
     counter = 0;
+    state = -1;
 
     face_cascade =     cv2.CascadeClassifier(classifierPath)
     # print loadedCasca deClassifier
@@ -110,15 +111,23 @@ def saveFace(imagePath):
                 minSize=(30, 30),
                 #flags = cv2.cv.CV_HAAR_SCALE_IMAGE
             )
-            print('counter is ' + str(counter))
+            
             if located is not () and len(located) == 1:
-                print located
-                # print image
+                state = 1
+                print 'Detected Person! Located at ' + str(located)
                 counter += 1
                 if counter >= 20:
                      cv2.imwrite(imagePath, image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])
                      return
+            elif len(located) > 1:
+                counter = 0
+                if state != 2:
+                    state = 2
+                    print 'Detected ' + str(len(located)) + ' People in Frame!'
             else:
+                if state != 3:
+                    state = 3
+                    print 'No People Detected.'
                 counter = 0
 
 
