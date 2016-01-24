@@ -13,10 +13,12 @@ from gtts import gTTS
 classifierPath = '/home/nicolas/opencv-2.4.11/data/haarcascades/haarcascade_frontalface_alt.xml'
 
 baseURL = 'http://hih.maxfresonke.com'
+# baseURL = '127.0.0.1:3000'
+
 url = baseURL + '/api/recognizeImage'
-houseID = '56a4a151ce3854d906a6e2d2';
-albumName = 'vhuvp5LKlqmsh8SRrw5l6H08eJnDp1MJDr2jsnCe40HSfVS6P9Our_House'
-albumKey = '7d48dab9cd0f5679338dd72d8c0d3c8d0da0767cdac87d710096ca10917bf406'
+houseID = '56a4dab23b5497c00f202da8';
+albumName = 'vhuvp5LKlqmsh8SRrw5l6H08eJnDp1MJDr2jsnCe40HSfVS6P9CashHouse'
+albumKey = '455f6c8615c31df211293810133e2ee150421f5fbaedf1ac2221a25c643e540c'
 
 
 def main():
@@ -27,8 +29,18 @@ def main():
 
 def performGreeting(user):
     print user
+    print user['_id']
+
     profile = user['profile']
     say(profile['greeting'])
+    say('I am adjusting the tempeture to your preferred' + str(profile['temperature']) + 'degrees fahrenheit')
+    time.sleep(3)
+
+    if 'Nicolas' == profile['name']:
+        say('I will now play ' + str(profile['song']))
+        playMp3('/home/nicolas/Downloads/Frank SinatraNewYorkNewYork.mp3')
+
+
 
 def detectPerson():
     imagePath = 'temp-image.jpg'
@@ -56,6 +68,9 @@ def say(text):
    os.system("mpg123 "+path)
    os.remove(path)
 
+def playMp3(path):
+    os.system("mpg123 "+path)
+
 
 
 def saveFace(imagePath):
@@ -75,7 +90,7 @@ def saveFace(imagePath):
                 greyimage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY);
             except:
                 continue
-                
+
             # cv2.imshow('greyImage', greyimage)
             located = face_cascade.detectMultiScale(
                 greyimage,
