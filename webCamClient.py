@@ -62,7 +62,7 @@ def postToServer(urlVal, albumName, albumKey):
     return r.text
 
 def speak(text):
-s    engine = pyttsx.init()
+    engine = pyttsx.init()
     voices = engine.getProperty('voices')
     engine.setProperty('voice', voices[2].id)
     rate = engine.getProperty('rate')
