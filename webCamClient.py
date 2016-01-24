@@ -38,7 +38,7 @@ def performGreeting(user):
 
     if 'Nicolas' == profile['name']:
         say('I will now play ' + str(profile['song']))
-        playMp3('/home/nicolas/Downloads/Frank SinatraNewYorkNewYork.mp3')
+        playMp3('/home/nicolas/Downloads/FrankSinatraNewYorkNewYork.mp3')
 
 
 
@@ -46,7 +46,7 @@ def detectPerson():
     imagePath = 'temp-image.jpg'
     saveFace(imagePath)
     imageB64 = encodeImage(imagePath)
-    
+
     payload = {'image': imageB64, 'albumName': albumName, 'albumKey': albumKey, 'houseID': houseID}
     r = requests.post(url, data=payload)
     print 'THIS IS YOUR RESPONSE: ' + r.text
