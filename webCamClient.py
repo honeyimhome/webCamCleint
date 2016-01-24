@@ -1,3 +1,4 @@
+
 import cv2
 import numpy
 import os
@@ -5,6 +6,8 @@ import time
 import requests
 import base64
 import pyttsx
+from pygame import mixer
+from gtts import gTTS
 
 classifierPath = '/home/nicolas/opencv-2.4.11/data/haarcascades/haarcascade_frontalface_alt.xml'
 
@@ -64,21 +67,42 @@ def postToServer(urlVal, albumName, albumKey):
 def speak(text):
     engine = pyttsx.init()
     voices = engine.getProperty('voices')
-    engine.setProperty('voice', voices[2].id)
+    engine.setProperty('voice', 'english-us')
     rate = engine.getProperty('rate')
     engine.setProperty('rate', rate-50)
     engine.say(text)
     engine.runAndWait()
 
+    for voice in voices:
+        print voice
+
+def playMP3(path):
+    mixer.init()
+    mixer.music.load(path)
+    mixer.music.play()
+    while mixer.music.get_busy():
+          print time.clock()
+
+
+
 def main():
     url = 'http://localhost:3000/api/recognizeImage'
     albumName = '4QadXMfQOBmshnqPYVNW17aGXPUBp1rFl9jjsnfdUCjJbfqUMyNEWTESTALBUM'
     albumKey = '24af1768cc902f65191c51ecf757e549bba56c441700c8fae7eb3180783f6fa3'
-    text = postToServer(url, albumName, albumKey);
-    print text
-    speak(text)
 
+    # text = postToServer(url, albumName, albumKey);
+    #
+    # #toDelete
+    # # jsonGrab = {'name': text, 'timeOfDay': albumName, 'albumKey': albumKey}
+    #
+    # print text
+    textToSpeak = 'Welcome home Nicolas, I am setting the temperature to 72 degrees. Have a great evening'
+    tts = gTTS(text= textToSpeak, lang= 'en')
+    tts.save('hello.mp3')
+    path = '/home/nicolas/Downloads/Frank Sinatra - New York New York Song --Lyrics-- [HD].mp3'
 
+    playMP3('hello.wav')
+    playMP3(path)
 
 
 if __name__ == '__main__':
