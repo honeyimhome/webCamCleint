@@ -7,10 +7,12 @@ import requests
 import base64
 import pyttsx
 import json
+import platform
 #from pygame import mixer
 from gtts import gTTS
 
-classifierPath = '/opt/opencv/data/haarcascades/haarcascade_frontalface_alt.xml'
+classifierPath = None
+mp3PlayProgram = None
 
 baseURL = 'http://hih.maxfresonke.com'
 # baseURL = '127.0.0.1:3000'
@@ -23,10 +25,23 @@ albumKey = '455f6c8615c31df211293810133e2ee150421f5fbaedf1ac2221a25c643e540c'
 shortMode = False
 
 def main():
+    configProgram()
 
     while True:
         detectPerson()
 
+def configProgram():
+    global classifierPath
+    global mp3PlayProgram
+    system = platform.system()
+    print 'System is Running on ' + system
+    if system == 'Darwin':
+        mp3PlayProgram = 'afplay'
+        classifierPath = "/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml"
+    else:
+        mp3PlayProgram = 'mpg123'
+        print "I see you're not running on Darwin. Please be sure to set the classifierPath correctly in the python file."
+        classifierPath = "/opt/opencv/data/haarcascades/haarcascade_frontalface_alt.xml"
 
 def performGreeting(user):
     profile = user['profile']
@@ -41,7 +56,7 @@ def performGreeting(user):
     if 'Nicolas' == profile['name']:
         say('I will now play ' + str(profile['song']))
         playMp3('/home/max/Desktop/webCamCleint/FrankSinatraNewYorkNewYork.mp3.mp3')
-	
+
     if 'song' in profile and profile['song'] == "all along the watchtower" and not shortMode:
         say('I will now play' + str(profile['song']))
         playMp3('/home/max/Desktop/webCamCleint/AllAlongTheWatchtowerAudio.mp3.mp3')
@@ -60,6 +75,7 @@ def detectPerson():
     try:
         potentialUser = json.loads(r.text)
     except:
+        print 'Server Returned: ' + r.text
         return
 
     if potentialUser['isGuest'] == True:
@@ -73,18 +89,17 @@ def detectPerson():
 
 
 def say(text):
-   path = 'say-temp.mp3'
+   path = 'text.mp3'
    tts = gTTS(text=text, lang= 'en')
    tts.save(path)
-   os.system("mpg123 "+path)
+   playMp3(path)
    os.remove(path)
 
 def playMp3(path):
-    os.system("mpg123 "+ path)
-
-
+    os.system(mp3PlayProgram + " " + path)
 
 def saveFace(imagePath):
+    print "Classifier Path is: " + classifierPath
     if os.path.isfile(classifierPath) is not True:
         raise '\n\n***********!!!No training file present\n\n'
     counter = 0;
@@ -112,13 +127,14 @@ def saveFace(imagePath):
                 minSize=(30, 30),
                 #flags = cv2.cv.CV_HAAR_SCALE_IMAGE
             )
-            
+
             if located is not () and len(located) == 1:
                 state = 1
                 print 'Detected Person! Located at ' + str(located)
                 counter += 1
                 if counter >= 20:
-                     cv2.imwrite(imagePath, image, [int(cv2.IMWRITE_JPEG_QUALITY), 90])
+                     cv2.resize(image, (0,0), fx=0.5, fy=0.5)
+                     cv2.imwrite(imagePath, image, [int(cv2.IMWRITE_JPEG_QUALITY), 60])
                      return
             elif len(located) > 1:
                 counter = 0
@@ -131,8 +147,6 @@ def saveFace(imagePath):
                     state = 3
                     print 'No People Detected.'
                 counter = 0
-
-
 
 def encodeImage(path):
     with open(path, "rb") as image_file:
