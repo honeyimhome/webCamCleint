@@ -36,19 +36,6 @@ def main():
     while True:
         detectPerson()
 
-def configProgram():
-    global classifierPath
-    global mp3PlayProgram
-    system = platform.system()
-    print 'System is Running on ' + system
-    if system == 'Darwin':
-        mp3PlayProgram = 'afplay'
-        classifierPath = "/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml"
-    else:
-        mp3PlayProgram = 'mpg123'
-        print "I see you're not running on Darwin. Please be sure to set the classifierPath correctly in the python file."
-        classifierPath = "/opt/opencv/data/haarcascades/haarcascade_frontalface_alt.xml"
-
 def performGreeting(user):
     profile = user['profile']
 
@@ -61,11 +48,11 @@ def performGreeting(user):
 
     if 'Nicolas' == profile['name']:
         say('I will now play ' + str(profile['song']))
-        playMp3('/home/max/Desktop/webCamCleint/FrankSinatraNewYorkNewYork.mp3.mp3')
+        playMp3('FrankSinatraNewYorkNewYork.mp3.mp3')
 
     if 'song' in profile and profile['song'] == "all along the watchtower" and not shortMode:
         say('I will now play' + str(profile['song']))
-        playMp3('/home/max/Desktop/webCamCleint/AllAlongTheWatchtowerAudio.mp3.mp3')
+        playMp3('AllAlongTheWatchtowerAudio.mp3.mp3')
 
 
 
@@ -159,6 +146,18 @@ def encodeImage(path):
 
 
 
+def configProgram():
+    global classifierPath
+    global mp3PlayProgram
+    system = platform.system()
+    print 'System is Running on ' + system
+    if system == 'Darwin':
+        mp3PlayProgram = 'afplay'
+        classifierPath = "/usr/local/Cellar/opencv/2.4.12_2/share/OpenCV/haarcascades/haarcascade_frontalface_alt.xml"
+    else:
+        mp3PlayProgram = 'mpg123'
+        print "I see you're not running on Darwin. Please be sure to set the classifierPath correctly in the python file."
+        classifierPath = "/opt/opencv/data/haarcascades/haarcascade_frontalface_alt.xml"
 
 
 
