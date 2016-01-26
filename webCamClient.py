@@ -133,8 +133,8 @@ def saveFace(imagePath):
                 print 'Detected Person! Located at ' + str(located)
                 counter += 1
                 if counter >= 20:
-                     cv2.resize(image, (0,0), fx=0.5, fy=0.5)
-                     cv2.imwrite(imagePath, image, [int(cv2.IMWRITE_JPEG_QUALITY), 60])
+                     image = cv2.resize(image, (0,0), fx=0.75, fy=0.75)
+                     cv2.imwrite(imagePath, image, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
                      return
             elif len(located) > 1:
                 counter = 0
