@@ -8,11 +8,17 @@ import base64
 import pyttsx
 import json
 import platform
+import datetime
+
 #from pygame import mixer
 from gtts import gTTS
 
 classifierPath = None
 mp3PlayProgram = None
+
+#Describes the amount of time needed to be in frame to detect face.
+# Second param is seconds
+timeNeededInFrame = datetime.timedelta(0, 3)
 
 baseURL = 'http://hih.maxfresonke.com'
 # baseURL = '127.0.0.1:3000'
@@ -102,7 +108,7 @@ def saveFace(imagePath):
     print "Classifier Path is: " + classifierPath
     if os.path.isfile(classifierPath) is not True:
         raise '\n\n***********!!!No training file present\n\n'
-    counter = 0;
+    timeInFrame = datetime.datetime.now();
     state = -1;
     lastUserNum = -1
 
@@ -131,13 +137,12 @@ def saveFace(imagePath):
             if located is not () and len(located) == 1:
                 state = 1
                 print 'Detected Person! Located at ' + str(located)
-                counter += 1
-                if counter >= 20:
+                if datetime.datetime.now() >= timeInFrame + timeNeededInFrame:
                      image = cv2.resize(image, (0,0), fx=0.75, fy=0.75)
                      cv2.imwrite(imagePath, image, [int(cv2.IMWRITE_JPEG_QUALITY), 50])
                      return
             elif len(located) > 1:
-                counter = 0
+                timeInFrame = datetime.datetime.now()
                 if state != 2 or lastUserNum != len(located):
                     lastUserNum = len(located)
                     state = 2
@@ -146,7 +151,7 @@ def saveFace(imagePath):
                 if state != 3:
                     state = 3
                     print 'No People Detected.'
-                counter = 0
+                timeInFrame = datetime.datetime.now()
 
 def encodeImage(path):
     with open(path, "rb") as image_file:
