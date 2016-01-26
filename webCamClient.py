@@ -20,7 +20,7 @@ houseID = '56a4dab23b5497c00f202da8';
 albumName = 'vhuvp5LKlqmsh8SRrw5l6H08eJnDp1MJDr2jsnCe40HSfVS6P9CashHouse'
 albumKey = '455f6c8615c31df211293810133e2ee150421f5fbaedf1ac2221a25c643e540c'
 
-shortMode = True
+shortMode = False
 
 def main():
 
@@ -89,6 +89,7 @@ def saveFace(imagePath):
         raise '\n\n***********!!!No training file present\n\n'
     counter = 0;
     state = -1;
+    lastUserNum = -1
 
     face_cascade =     cv2.CascadeClassifier(classifierPath)
     # print loadedCasca deClassifier
@@ -121,7 +122,8 @@ def saveFace(imagePath):
                      return
             elif len(located) > 1:
                 counter = 0
-                if state != 2:
+                if state != 2 or lastUserNum != len(located):
+                    lastUserNum = len(located)
                     state = 2
                     print 'Detected ' + str(len(located)) + ' People in Frame!'
             else:
